@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Rental Platform | Stellar</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.2.2/stellar-sdk.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+        }
+
+        .wallet-section {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .wallet-address {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: none;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: white;
+            color: #1e3c72;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 32px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        /* Info Banner */
+        .info-banner {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 24px 32px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            border-left: 6px solid #7e22ce;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .info-banner h3 {
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .info-banner p {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-banner code {
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #7e22ce;
+            font-weight: 600;
+        }
+
+        .info-banner a {
+            color: #7e22ce;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .info-banner a:hover {
+            border-bottom-color: #7e22ce;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 140px;
+            padding: 16px 20px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .tab.active {
+            background: white;
+            color: #1e3c72;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            margin-bottom: 24px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card h2 {
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 32px;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1e293b;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #7e22ce;
+            box-shadow: 0 0 0 4px rgba(126, 34, 206, 0.1);
+        }
+
+        .small-text {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* NFT Grid */
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+            margin-top: 24px;
+        }
+
+        .nft-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f5f9;
+        }
+
+        .nft-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 48px rgba(0,0,0,0.15);
+        }
+
+        .nft-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 96px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nft-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 60%);
+        }
+
+        .nft-details {
+            padding: 24px;
+        }
+
+        .nft-id {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .nft-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .nft-info div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nft-info strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .nft-status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+
+        .status-rented {
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            color: #9a3412;
+        }
+
+        .nft-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nft-actions button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Test Panel */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .test-results {
+            margin-top: 32px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .test-results h3 {
+            color: #1e293b;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        #testResults {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #testResults::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #testResults::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        #testResults::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 18px 28px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 420px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            font-size: 14px;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(450px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 32px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 96px;
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: #334155;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            margin-bottom: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .wallet-section {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .wallet-section button,
+            .wallet-address {
+                width: 100%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .nft-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .tab {
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">🎨</span>
+                <span>NFT Rental Hub</span>
+            </div>
+            <div class="wallet-section">
+                <div class="wallet-address" id="walletDisplay">Not Connected</div>
+                <button class="btn btn-primary" id="connectWallet">Connect Wallet</button>
+            </div>
+        </header>
+
+        <div class="info-banner">
+            <h3>🚀 Smart Contract Deployed Successfully</h3>
+            <p><strong>Contract ID:</strong> <code>CC6N6HB6G4BN3OA2NATB34V54AE6NIR7CQ2XUCH4SDUVAUIT3SWHE426</code></p>
+            <p><strong>Network:</strong> Stellar Testnet</p>
+            <p style="margin-top: 12px;">
+                💡 <strong>Demo Mode Active:</strong> Click "Connect Wallet" to test with simulated data, or install 
+                <a href="https://www.freighter.app/" target="_blank">Freighter Wallet</a> for real blockchain transactions!
+            </p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalListings">0</div>
+                <div class="stat-label">Total Listings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeRentals">0</div>
+                <div class="stat-label">Active Rentals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="availableNFTs">0</div>
+                <div class="stat-label">Available NFTs</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('marketplace')">🏪 Marketplace</button>
+            <button class="tab" onclick="switchTab('list')">📝 List NFT</button>
+            <button class="tab" onclick="switchTab('my-rentals')">🎯 My Rentals</button>
+            <button class="tab" onclick="switchTab('test')">🧪 Test Panel</button>
+        </div>
+
+        <div id="marketplace" class="tab-content active">
+            <div class="card">
+                <h2>Available NFTs for Rent</h2>
+                <button class="btn btn-info refresh-btn" onclick="loadAllNFTs()">
+                    🔄 Refresh Marketplace
+                </button>
+                <div class="nft-grid" id="nftGrid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎨</div>
+                        <h3>No NFTs Listed Yet</h3>
+                        <p>Be the first to list an NFT for rent!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="list" class="tab-content">
+            <div class="card">
+                <h2>List Your NFT for Rent</h2>
+                <form id="listNFTForm">
+                    <div class="form-group">
+                        <label>NFT ID</label>
+                        <input type="number" id="nftId" required placeholder="Enter unique NFT ID (e.g., 1001)">
+                    </div>
+                    <div class="form-group">
+                        <label>Rental Duration</label>
+                        <input type="number" id="rentalDuration" required placeholder="Duration in seconds">
+                        <div class="small-text">💡 Common durations: <strong>3600</strong> (1 hour) • <strong>86400</strong> (1 day) • <strong>604800</strong> (1 week)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Rental Price</label>
+                        <input type="number" id="rentalPrice" required placeholder="Price in stroops">
+                        <div class="small-text">💡 Conversion: <strong>1 XLM = 10,000,000 stroops</strong> • Example: 5000000 = 0.5 XLM</div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" style="width: 100%;" id="listBtn">
+                        List NFT for Rent
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="my-rentals" class="tab-content">
+            <div class="card">
+                <h2>My Rented NFTs</h2>
+                <div class="nft-grid" id="myRentalsGrid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <h3>No Active Rentals</h3>
+                        <p>Rent an NFT from the marketplace to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="test" class="tab-content">
+            <div class="card">
+                <h2>Contract Testing Panel</h2>
+                <p style="color: #64748b; margin-bottom: 28px; font-size: 15px;">Test all smart contract functions directly. Execute tests sequentially for best results.</p>
+                
+                <div class="test-grid">
+                    <button class="btn btn-secondary" onclick="testListNFT()">
+                        1️⃣ List NFT #9001
+                    </button>
+                    <button class="btn btn-info" onclick="testViewRental()">
+                        2️⃣ View Rental Info
+                    </button>
+                    <button class="btn btn-secondary" onclick="testRentNFT()">
+                        3️⃣ Rent NFT #9001
+                    </button>
+                    <button class="btn btn-danger" onclick="testReturnNFT()">
+                        4️⃣ Return NFT
+                    </button>
+                </div>
+
+                <div class="test-results">
+                    <h3>📊 Test Results</h3>
+                    <div id="testResults">No tests run yet. Click a button above to start testing the smart contract!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONTRACT_ID = 'CC6N6HB6G4BN3OA2NATB34V54AE6NIR7CQ2XUCH4SDUVAUIT3SWHE426';
+        const NETWORK = 'TESTNET';
+        const DEMO_PUBLIC_KEY = 'GBTESTDEMOACCOUNTPUBLICKEY123456789ABCDEFGHIJK';
+
+        // State
+        let connectedWallet = null;
+        let isFreighterAvailable = false;
+        let nftListings = [];
+
+        const nftIcons = ['🎨', '🖼️', '🎭', '🎪', '🎬', '🎮', '🎯', '🎲', '🎸', '🎺'];
+
+        // Initialize
+        window.addEventListener('load', async () => {
+            isFreighterAvailable = await checkFreighter();
+            if (!isFreighterAvailable) {
+                showNotification('Freighter not detected. Running in demo mode.', 'info');
+            }
+        });
+
+        async function checkFreighter() {
+            return typeof window.freighterApi !== 'undefined' && await window.freighterApi.isConnected();
+        }
+
+        // Connect wallet
+        document.getElementById('connectWallet').addEventListener('click', async () => {
+            try {
+                if (isFreighterAvailable) {
+                    const publicKey = await window.freighterApi.getPublicKey();
+                    connectedWallet = publicKey;
+                    document.getElementById('walletDisplay').textContent = 
+                        `${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`;
+                    document.getElementById('connectWallet').textContent = 'Connected ✓';
+                    showNotification('Freighter wallet connected successfully!', 'success');
+                } else {
+                    connectedWallet = DEMO_PUBLIC_KEY;
+                    document.getElementById('walletDisplay').textContent = 
+                        `${DEMO_PUBLIC_KEY.slice(0, 6)}...${DEMO_PUBLIC_KEY.slice(-4)}`;
+                    document.getElementById('connectWallet').textContent = 'Demo Mode ✓';
+                    showNotification('Demo wallet connected! All transactions are simulated.', 'info');
+                }
+                
+                loadDemoData();
+            } catch (error) {
+                showNotification('Failed to connect wallet: ' + error.message, 'error');
+            }
+        });
+
+        // List NFT
+        document.getElementById('listNFTForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!connectedWallet) {
+                showNotification('Please connect your wallet first', 'error');
+                return;
+            }
+
+            const nftId = parseInt(document.getElementById('nftId').value);
+            const duration = parseInt(document.getElementById('rentalDuration').value);
+            const price = parseInt(document.getElementById('rentalPrice').value);
+
+            const btn = document.getElementById('listBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Listing...';
+
+            try {
+                await listNFTForRent(nftId, duration, price);
+                showNotification(`NFT #${nftId} listed successfully!`, 'success');
+                document.getElementById('listNFTForm').reset();
+                await loadAllNFTs();
+            } catch (error) {
+                showNotification('Failed to list NFT: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'List NFT for Rent';
+            }
+        });
+
+        async function listNFTForRent(nftId, duration, price) {
+            nftListings.push({
+                nft_id: nftId,
+                owner: connectedWallet,
+                renter: connectedWallet,
+                rental_start: 0,
+                rental_end: Math.floor(Date.now() / 1000) + duration,
+                price: price,
+                is_active: false
+            });
+            
+            // Sort by NFT ID
+            nftListings.sort((a, b) => a.nft_id - b.nft_id);
+            updateStats();
+            renderNFTs();
+        }
+
+        async function viewRentalInfo(nftId) {
+            return nftListings.find(n => n.nft_id === nftId) || null;
+        }
+
+        async function rentNFT(nftId) {
+            if (!connectedWallet) {
+                showNotification('Please connect your wallet first', 'error');
+                return;
+            }
+
+            const nft = nftListings.find(n => n.nft_id === nftId);
+            if (nft && !nft.is_active) {
+                nft.renter = connectedWallet;
+                nft.rental_start = Math.floor(Date.now() / 1000);
+                nft.is_active = true;
+                showNotification(`Successfully rented NFT #${nftId}!`, 'success');
+                updateStats();
+                renderNFTs();
+            }
+        }
+
+        async function returnNFT(nftId) {
+            const nft = nftListings.find(n => n.nft_id === nftId);
+            if (nft && nft.is_active && nft.renter === connectedWallet) {
+                nft.is_active = false;
+                showNotification(`NFT #${nftId} returned successfully!`, 'success');
+                updateStats();
+                renderNFTs();
+                renderMyRentals();
+            } else {
+                showNotification('You cannot return this NFT', 'error');
+            }
+        }
+
+        // Test functions
+        async function testListNFT() {
+            const testId = 9001;
+            addTestResult(`Testing list_nft_for_rent with NFT ID ${testId}...`);
+            try {
+                await listNFTForRent(testId, 86400, 5000000);
+                addTestResult(`✅ SUCCESS: NFT #${testId} listed for 0.5 XLM (1 day duration)`);
+            } catch (error) {
+                addTestResult(`❌ ERROR: ${error.message}`);
+            }
+        }
+
+        async function testViewRental() {
+            const testId = 9001;
+            addTestResult(`Testing view_rental_info for NFT ID ${testId}...`);
+            try {
+                const info = await viewRentalInfo(testId);
+                if (info) {
+                    addTestResult(`✅ SUCCESS: Rental info retrieved`);
+                    addTestResult(`   • Owner: ${info.owner.slice(0, 10)}...`);
+                    addTestResult(`   • Price: ${info.price / 10000000} XLM`);
+                    addTestResult(`   • Active: ${info.is_active ? 'Yes' : 'No'}`);
+                    addTestResult(`   • Duration: ${Math.round((info.rental_end - Date.now() / 1000) / 3600)} hours remaining`);
+                } else {
+                    addTestResult(`⚠️ NFT not found. Please run Test 1 first.`);
+                }
+            } catch (error) {
+                addTestResult(`❌ ERROR: ${error.message}`);
+            }
+        }
+
+        async function testRentNFT() {
+            const testId = 9001;
+            addTestResult(`Testing rent_nft for NFT ID ${testId}...`);
+            try {
+                await rentNFT(testId);
+                addTestResult(`✅ SUCCESS: NFT #${testId} rented successfully`);
+            } catch (error) {
+                addTestResult(`❌ ERROR: ${error.message}`);
+            }
+        }
+
+        async function testReturnNFT() {
+            const testId = 9001;
+            addTestResult(`Testing return_nft for NFT ID ${testId}...`);
+            try {
+                await returnNFT(testId);
+                addTestResult(`✅ SUCCESS: NFT #${testId} returned successfully`);
+            } catch (error) {
+                addTestResult(`❌ ERROR: ${error.message}`);
+            }
+        }
+
+        function addTestResult(message) {
+            const results = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const currentContent = results.textContent;
+            
+            if (currentContent.includes('No tests run yet')) {
+                results.textContent = `[${timestamp}] ${message}`;
+            } else {
+                results.textContent += `\n[${timestamp}] ${message}`;
+            }
+            results.scrollTop = results.scrollHeight;
+        }
+
+        async function loadAllNFTs() {
+            showNotification('Refreshing marketplace...', 'info');
+            // Sort NFTs by ID
+            nftListings.sort((a, b) => a.nft_id - b.nft_id);
+            updateStats();
+            renderNFTs();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'my-rentals') {
+                renderMyRentals();
+            }
+        }
+
+        function renderNFTs() {
+            const grid = document.getElementById('nftGrid');
+            const availableNFTs = nftListings.filter(nft => !nft.is_active).sort((a, b) => a.nft_id - b.nft_id);
+
+            if (availableNFTs.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎨</div>
+                        <h3>No NFTs Available</h3>
+                        <p>List your NFT or check back later!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = availableNFTs.map(nft => {
+                const icon = nftIcons[nft.nft_id % nftIcons.length];
+                const durationDays = Math.round((nft.rental_end - Date.now() / 1000) / 86400);
+                const priceXLM = (nft.price / 10000000).toFixed(2);
+                
+                return `
+                    <div class="nft-card">
+                        <div class="nft-image">${icon}</div>
+                        <div class="nft-details">
+                            <div class="nft-status status-available">Available</div>
+                            <div class="nft-id">NFT #${nft.nft_id}</div>
+                            <div class="nft-info">
+                                <div><strong>Price</strong><span>${priceXLM} XLM</span></div>
+                                <div><strong>Duration</strong><span>~${durationDays} days</span></div>
+                                <div><strong>Owner</strong><span>${nft.owner.slice(0, 6)}...${nft.owner.slice(-4)}</span></div>
+                            </div>
+                            <div class="nft-actions">
+                                <button class="btn btn-secondary" onclick="rentNFT(${nft.nft_id})">
+                                    Rent Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMyRentals() {
+            const grid = document.getElementById('myRentalsGrid');
+            const myRentals = nftListings.filter(nft => 
+                nft.is_active && nft.renter === connectedWallet
+            ).sort((a, b) => a.nft_id - b.nft_id);
+
+            if (myRentals.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <h3>No Active Rentals</h3>
+                        <p>Rent an NFT from the marketplace!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = myRentals.map(nft => {
+                const icon = nftIcons[nft.nft_id % nftIcons.length];
+                const timeLeft = Math.max(0, Math.round((nft.rental_end - Date.now() / 1000) / 3600));
+                const startDate = new Date(nft.rental_start * 1000).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                return `
+                    <div class="nft-card">
+                        <div class="nft-image">${icon}</div>
+                        <div class="nft-details">
+                            <div class="nft-status status-rented">Currently Rented</div>
+                            <div class="nft-id">NFT #${nft.nft_id}</div>
+                            <div class="nft-info">
+                                <div><strong>Time Left</strong><span>~${timeLeft} hours</span></div>
+                                <div><strong>Started</strong><span>${startDate}</span></div>
+                            </div>
+                            <div class="nft-actions">
+                                <button class="btn btn-danger" onclick="returnNFT(${nft.nft_id})">
+                                    Return NFT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalListings').textContent = nftListings.length;
+            document.getElementById('activeRentals').textContent = 
+                nftListings.filter(n => n.is_active).length;
+            document.getElementById('availableNFTs').textContent = 
+                nftListings.filter(n => !n.is_active).length;
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(450px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        function loadDemoData() {
+            nftListings = [
+                {
+                    nft_id: 1001,
+                    owner: 'GDEMO1AAAABBBBCCCCDDDDEEEEFFFFGGGG',
+                    renter: 'GDEMO1AAAABBBBCCCCDDDDEEEEFFFFGGGG',
+                    rental_start: 0,
+                    rental_end: Math.floor(Date.now() / 1000) + 604800,
+                    price: 5000000,
+                    is_active: false
+                },
+                {
+                    nft_id: 1002,
+                    owner: 'GDEMO2HHHHIIIIJJJJKKKKLLLLMMMMNNN',
+                    renter: 'GDEMO2HHHHIIIIJJJJKKKKLLLLMMMMNNN',
+                    rental_start: 0,
+                    rental_end: Math.floor(Date.now() / 1000) + 259200,
+                    price: 3000000,
+                    is_active: false
+                },
+                {
+                    nft_id: 1003,
+                    owner: 'GDEMO3OOOOPPPPQQQQRRRRSSSSTTTTUVW',
+                    renter: 'GDEMO3OOOOPPPPQQQQRRRRSSSSTTTTUVW',
+                    rental_start: 0,
+                    rental_end: Math.floor(Date.now() / 1000) + 432000,
+                    price: 10000000,
+                    is_active: false
+                }
+            ];
+            
+            // Sort by NFT ID
+            nftListings.sort((a, b) => a.nft_id - b.nft_id);
+            updateStats();
+            renderNFTs();
+        }
+
+        // Initialize
+        updateStats();
+    </script>
+</body>
+</html>

@@ -1,371 +1,137 @@
-# nftrentalplatform 🚀
+# 🎨 NFT Rental Platform
 
-A Soroban smart-contract for listing, renting, and returning NFTs on Stellar. Simple on‑chain rental lifecycle, rental tracking, and unit tests.
+A decentralized NFT rental marketplace built on Stellar blockchain using Soroban smart contracts.
 
----
+## ✨ Features
 
-## Table of Contents
-- [Tech stack](#tech-stack)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Quick install](#quick-install)
-- [Build & test](#build--test)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Folder structure](#folder-structure)
-- [Future work](#future-work)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Author](#author)
+- List NFTs for rent with custom duration and pricing
+- Browse available NFTs in marketplace
+- Rent NFTs with secure smart contract transactions
+- Return rented NFTs
+- Track rental history
 
----
+## 🚀 Quick Start
 
-## Tech stack
-- Rust (Soroban smart contracts)
-- Soroban SDK / Stellar CLI
-- Cargo, GNU Make (optional)
-- Optional frontend: JavaScript / React
+### Prerequisites
 
----
+- [Rust](https://rustup.rs/) (latest stable)
+- [Stellar CLI](https://developers.stellar.org/docs/smart-contracts/getting-started/setup)
+- [Node.js](https://nodejs.org/) v16+ (for local server)
+- [Freighter Wallet](https://www.freighter.app/) (browser extension)
 
-## Features
-- List NFT for rent (owner, price, duration)
-- Rent NFT (records renter and rental window)
-- Return NFT (end rental)
-- Query rental info by NFT ID
-- Unit tests for contract logic
+### Installation
 
----
-
-## Requirements
-- Rust toolchain (stable)
-- wasm target: wasm32-unknown-unknown
-- Soroban / Stellar CLI on PATH
-- GNU Make (optional)
-- Node.js (only if using frontend)
-
----
-
-## Quick install
-Clone repository and enter project root:
+1. **Clone the repository**
 ```bash
-git clone <REPOSITORY_URL>
-cd nftrentalplatform
+   git clone https://github.com/YOUR_USERNAME/NFTRENTALPLATFORM.git
+   cd NFTRENTALPLATFORM
 ```
 
-Add wasm target (once):
+2. **Deploy Smart Contract**
 ```bash
-rustup target add wasm32-unknown-unknown
+   cd contracts/nft-rental
+   
+   # Build contract
+   cargo build --target wasm32-unknown-unknown --release
+   
+   # Deploy to testnet
+   stellar contract deploy \
+     --wasm target/wasm32-unknown-unknown/release/nft_rental.wasm \
+     --network testnet \
+     --source YOUR_SECRET_KEY
+   
+   # Save the CONTRACT_ID output!
 ```
 
-Install Soroban/stellar CLI per official docs.
-
----
-
-## Build & test
-Build contract (example):
+3. **Configure Frontend**
 ```bash
-cd contracts/nftrental
-make build         # uses Makefile if present
-# or
-cargo build --release --target wasm32-unknown-unknown
+   cd ../../frontend
+   
+   # Open index.html and replace CONTRACT_ID
+   # Find: const CONTRACT_ID = 'CC6N6HB6G4BN3OA2...'
+   # Replace with your deployed contract ID
 ```
 
-Run tests:
+4. **Run Frontend**
 ```bash
-cargo test
-# or from repo root
-make test
+   # Simple HTTP server
+   python3 -m http.server 8000
+   
+   # Or use npx
+   npx serve .
+   
+   # Or Node.js
+   npx http-server -p 8000
 ```
 
-WASM artifact location (after build):
-contracts/nftrental/target/wasm32-unknown-unknown/release/
+5. **Open Browser**
 
----
+Navigate to: http://localhost:8000
 
-## Usage
-Deploy and call contract (example CLI commands — adapt args to your ABI):
+## 📖 Documentation
 
-Deploy:
+- [Setup Guide](docs/SETUP.md) - Detailed installation instructions
+- [API Documentation](docs/API.md) - Smart contract functions
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues
+
+## 🧪 Testing
+
+### Test Smart Contract
 ```bash
-stellar contract deploy --wasm contracts/nftrental/target/wasm32-unknown-unknown/release/nftrental.wasm --network local
+cd scripts
+chmod +x test-contract.sh
+./test-contract.sh
 ```
 
-Call examples:
-```bash
-# list an NFT
-stellar contract invoke --id <CONTRACT_ID> --fn list_nft_for_rent --arg '("nft-123","owner","86400",100)' --network local
+### Test Frontend
+1. Open `http://localhost:8000`
+2. Click "Connect Wallet"
+3. Go to "Test Panel" tab
+4. Run tests 1 → 2 → 3 → 4
 
-# rent an NFT
-stellar contract invoke --id <CONTRACT_ID> --fn rent_nft --arg '("nft-123","renter")' --network local
+## 🌐 Live Demo
 
-# return an NFT
-stellar contract invoke --id <CONTRACT_ID> --fn return_nft --arg '("nft-123")' --network local
+**Contract ID (Testnet):** `CC6N6HB6G4BN3OA2NATB34V54AE6NIR7CQ2XUCH4SDUVAUIT3SWHE426`
 
-# view rental info
-stellar contract invoke --id <CONTRACT_ID> --fn view_rental_info --arg '("nft-123")' --network local
-```
+[Try Live Demo →](https://your-github-username.github.io/NFTRENTALPLATFORM/frontend/)
 
-Refer to contracts/nftrental/src/lib.rs for exact signatures and auth requirements.
+## 🛠️ Tech Stack
 
----
+- **Blockchain:** Stellar (Soroban)
+- **Smart Contract:** Rust
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Wallet:** Freighter
 
-## Screenshots
-Place images under docs/ and reference them with either Markdown or HTML for full-width display.
+## 📝 Smart Contract Functions
 
-Full-width example (recommended for README):
-```html
-<p align="center">
-  <img src="docs/screenshot.png" alt="Demo" width="100%">
-</p>
-```
+| Function | Description |
+|----------|-------------|
+| `list_nft_for_rent` | List an NFT with duration and price |
+| `view_rental_info` | Get rental details for an NFT |
+| `rent_nft` | Rent an available NFT |
+| `return_nft` | Return a rented NFT |
 
-Standard Markdown:
-```markdown
-![Demo screenshot](docs/screenshot.png)
-```
+## 🤝 Contributing
 
-Use relative paths so GitHub and local preview resolve images.
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
----
+## 📄 License
 
-## Folder structure
-```
-.
-├── README.md
-├── LICENSE
-├── Cargo.toml
-├── contracts/
-│   └── nftrental/
-│       ├── Cargo.toml
-│       ├── Makefile
-│       └── src/
-│           ├── lib.rs
-│           └── test.rs
-├── frontend/        # optional
-└── docs/            # images, diagrams, guides
-```
+MIT License - see [LICENSE](LICENSE) file
+
+## 🆘 Support
+
+- [GitHub Issues](https://github.com/YOUR_USERNAME/NFTRENTALPLATFORM/issues)
+- [Stellar Discord](https://discord.gg/stellardev)
+
+## 👥 Authors
+
+- Your Name - [@yourhandle](https://github.com/YOUR_USERNAME)
 
 ---
 
-## Future work
-- On‑chain payments and escrow
-- Rental expiry enforcement and penalties
-- Event logs & indexing for frontend
-- React dashboard and improved tests/CI
-
----
-
-## Contributing
-1. Fork the repo.
-2. Create a branch: git checkout -b feat/your-feature
-3. Add tests and run: cargo fmt && cargo test
-4. Open a PR with description and tests.
-
----
-
-## Troubleshooting
-- "wasm target missing": rustup target add wasm32-unknown-unknown  
-- "stellar / soroban CLI not found": install and add to PATH  
-- Tests failing: run cargo test -v and include logs when filing issues
-
----
-
-## License
-MIT — see LICENSE file.
-
----
-
-## Author
-Your Name  
-GitHub: https://github.com/your-username  
-Email: your.email@example.com
-
----
-```// filepath: c:\Users\ACER\Desktop\stellar project\NFTRENTALPLATFORM\README.md
-# nftrentalplatform 🚀
-
-A Soroban smart-contract for listing, renting, and returning NFTs on Stellar. Simple on‑chain rental lifecycle, rental tracking, and unit tests.
-
----
-
-## Table of Contents
-- [Tech stack](#tech-stack)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Quick install](#quick-install)
-- [Build & test](#build--test)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Folder structure](#folder-structure)
-- [Future work](#future-work)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Author](#author)
-
----
-
-## Tech stack
-- Rust (Soroban smart contracts)
-- Soroban SDK / Stellar CLI
-- Cargo, GNU Make (optional)
-- Optional frontend: JavaScript / React
-
----
-
-## Features
-- List NFT for rent (owner, price, duration)
-- Rent NFT (records renter and rental window)
-- Return NFT (end rental)
-- Query rental info by NFT ID
-- Unit tests for contract logic
-
----
-
-## Requirements
-- Rust toolchain (stable)
-- wasm target: wasm32-unknown-unknown
-- Soroban / Stellar CLI on PATH
-- GNU Make (optional)
-- Node.js (only if using frontend)
-
----
-
-## Quick install
-Clone repository and enter project root:
-```bash
-git clone <REPOSITORY_URL>
-cd nftrentalplatform
-```
-
-Add wasm target (once):
-```bash
-rustup target add wasm32-unknown-unknown
-```
-
-Install Soroban/stellar CLI per official docs.
-
----
-
-## Build & test
-Build contract (example):
-```bash
-cd contracts/nftrental
-make build         # uses Makefile if present
-# or
-cargo build --release --target wasm32-unknown-unknown
-```
-
-Run tests:
-```bash
-cargo test
-# or from repo root
-make test
-```
-
-WASM artifact location (after build):
-contracts/nftrental/target/wasm32-unknown-unknown/release/
-
----
-
-## Usage
-Deploy and call contract (example CLI commands — adapt args to your ABI):
-
-Deploy:
-```bash
-stellar contract deploy --wasm contracts/nftrental/target/wasm32-unknown-unknown/release/nftrental.wasm --network local
-```
-
-Call examples:
-```bash
-# list an NFT
-stellar contract invoke --id <CONTRACT_ID> --fn list_nft_for_rent --arg '("nft-123","owner","86400",100)' --network local
-
-# rent an NFT
-stellar contract invoke --id <CONTRACT_ID> --fn rent_nft --arg '("nft-123","renter")' --network local
-
-# return an NFT
-stellar contract invoke --id <CONTRACT_ID> --fn return_nft --arg '("nft-123")' --network local
-
-# view rental info
-stellar contract invoke --id <CONTRACT_ID> --fn view_rental_info --arg '("nft-123")' --network local
-```
-
-Refer to contracts/nftrental/src/lib.rs for exact signatures and auth requirements.
-
----
-
-## Screenshots
-Place images under docs/ and reference them with either Markdown or HTML for full-width display.
-
-Full-width example (recommended for README):
-```html
-<p align="center">
-  <img src="docs/screenshot.png" alt="Demo" width="100%">
-</p>
-```
-
-Standard Markdown:
-```markdown
-![Demo screenshot](docs/screenshot.png)
-```
-
-Use relative paths so GitHub and local preview resolve images.
-
----
-
-## Folder structure
-```
-.
-├── README.md
-├── LICENSE
-├── Cargo.toml
-├── contracts/
-│   └── nftrental/
-│       ├── Cargo.toml
-│       ├── Makefile
-│       └── src/
-│           ├── lib.rs
-│           └── test.rs
-├── frontend/        # optional
-└── docs/            # images, diagrams, guides
-```
-
----
-
-## Future work
-- On‑chain payments and escrow
-- Rental expiry enforcement and penalties
-- Event logs & indexing for frontend
-- React dashboard and improved tests/CI
-
----
-
-## Contributing
-1. Fork the repo.
-2. Create a branch: git checkout -b feat/your-feature
-3. Add tests and run: cargo fmt && cargo test
-4. Open a PR with description and tests.
-
----
-
-## Troubleshooting
-- "wasm target missing": rustup target add wasm32-unknown-unknown  
-- "stellar / soroban CLI not found": install and add to PATH  
-- Tests failing: run cargo test -v and include logs when filing issues
-
----
-
-## License
-MIT — see LICENSE file.
-
----
-
-## Author
-Your Name  
-GitHub: https://github.com/your-username  
-Email: your.email@example.com
-
----
+**⭐ Star this repo if you find it helpful!**
