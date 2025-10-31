@@ -137,8 +137,8 @@ MIT License - see [LICENSE](LICENSE) file
 **⭐ Star this repo if you find it helpful!**
 
 ## SCREENSHOTS
-![terminal deploy](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(70).png?raw=true)
+![TERMINAL DEPLOY](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(70).png?raw=true)
 
-![stellar page](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(70).png?raw=true)
+![STELLAR DEPOLY PAGE](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(70).png?raw=true)
 
-![front end](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(71).png?raw=true)
+![FRONT END](https://github.com/slay86063-spec/project/blob/main/Screenshot%202025-10-30%20105758.png?raw=true)
