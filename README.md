@@ -1,3 +1,9 @@
+## 🌐 Live Demo
+**Try it now:** [https://slay86063-spec.github.io/project/frontend/](https://slay86063-spec.github.io/project/frontend/)
+
+**Repository:** [https://github.com/slay86063-spec/project](https://github.com/slay86063-spec/project)
+
+**Contract ID:** `CC6N6HB6G4BN3OA2NATB34V54AE6NIR7CQ2XUCH4SDUVAUIT3SWHE426`
 # 🎨 NFT Rental Platform
 
 A decentralized NFT rental marketplace built on Stellar blockchain using Soroban smart contracts.
@@ -135,3 +141,10 @@ MIT License - see [LICENSE](LICENSE) file
 ---
 
 **⭐ Star this repo if you find it helpful!**
+
+## SCREENSHOTS
+![terminal deploy]("C:\Users\ACER\Pictures\Screenshots\Screenshot 2025-10-30 105758.png")
+
+![stellar page]("C:\Users\ACER\Pictures\Screenshots\Screenshot (70).png")
+
+![front end]("C:\Users\ACER\Pictures\Screenshots\Screenshot (71).png")
