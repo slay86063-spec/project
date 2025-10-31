@@ -137,8 +137,8 @@ MIT License - see [LICENSE](LICENSE) file
 **⭐ Star this repo if you find it helpful!**
 
 ## SCREENSHOTS
-![terminal deploy]("C:\Users\ACER\Pictures\Screenshots\Screenshot 2025-10-30 105758.png")
+![terminal deploy](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(70).png?raw=true)
 
-![stellar page]("C:\Users\ACER\Pictures\Screenshots\Screenshot (70).png")
+![stellar page](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(70).png?raw=true)
 
-![front end]("C:\Users\ACER\Pictures\Screenshots\Screenshot (71).png")
+![front end](https://github.com/slay86063-spec/project/blob/main/Screenshot%20(71).png?raw=true)
