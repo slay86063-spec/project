@@ -137,8 +137,8 @@ MIT License - see [LICENSE](LICENSE) file
 **⭐ Star this repo if you find it helpful!**
 
 ## SCREENSHOTS
-![image]("image\Screenshot 2025-10-30 105758.png")
+![terminal deploy]("C:\Users\ACER\Pictures\Screenshots\Screenshot 2025-10-30 105758.png")
 
-![image]("image\Screenshot (70).png")
+![stellar page]("C:\Users\ACER\Pictures\Screenshots\Screenshot (70).png")
 
-![image]("image\Screenshot (71).png")
+![front end]("C:\Users\ACER\Pictures\Screenshots\Screenshot (71).png")
